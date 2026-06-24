@@ -81,14 +81,13 @@
   }
 
   .grid{
-    display:grid;
-    grid-template-columns:repeat(6, 1fr);
-    grid-auto-rows:10px;
-    gap:28px;
+    position:relative;
+    width:100%;
+    height:1600px; /* alto del "lienzo" donde flotan las obras en desktop */
   }
 
   .piece{
-    position:relative;
+    position:absolute;
     overflow:hidden;
     cursor:pointer;
     background:#f4f3f0;
@@ -148,14 +147,8 @@
     outline-offset:3px;
   }
 
-  /* tamaños variables — clases asignadas por JS dentro de rangos */
-  .h-s{ grid-row-end:span 28; }
-  .h-m{ grid-row-end:span 36; }
-  .h-l{ grid-row-end:span 46; }
-  .h-xl{ grid-row-end:span 54; }
-
-  .w-2{ grid-column-end:span 2; }
-  .w-3{ grid-column-end:span 3; }
+  /* el tamaño y posición de cada obra se define inline desde JS
+     (left, top, width en %) según las coordenadas que vos elijas */
 
   /* ---------- About ---------- */
   #about{
@@ -293,11 +286,17 @@
   /* ---------- Responsive ---------- */
   @media (max-width: 880px){
     .grid{
-      grid-template-columns:1fr;
-      grid-auto-rows:auto;
+      height:auto;
+      display:flex;
+      flex-direction:column;
       gap:34px;
     }
-    .piece{ grid-column:auto !important; grid-row:auto !important; }
+    .piece{
+      position:relative !important;
+      left:auto !important;
+      top:auto !important;
+      width:100% !important;
+    }
     .piece img{ height:auto; aspect-ratio:4/5; }
     .piece.square img{ aspect-ratio:1/1; }
     .overlay{
@@ -335,10 +334,11 @@
 <section id="about">
   <h2 class="display">Sobre mí</h2>
   <p>
-    Pinto y dibujo por encargo, reproduciendo la imagen que me traigas en la
-    técnica que mejor la represente. También pinto en vivo para eventos,
-    capturando un momento mientras sucede. Cada pieza se hace a mano, con
-    tiempo y atención al detalle.
+    Soy autodidacta y trabajo con distintas técnicas: pintura en acrílicos
+    y óleos, dibujo en lápiz negro y policromos. Pinto y dibujo en vivo en
+    eventos, capturando un momento mientras sucede, y también por encargo,
+    en mi propio tiempo. En ambos casos, cada pieza se hace a pedido, a partir
+    de la imagen o la idea que me traigas.
   </p>
 </section>
 
@@ -347,8 +347,8 @@
   <p>¿Querés encargar una obra o coordinar una pintura en vivo para tu evento?</p>
   <div class="contact-links">
     <a href="https://instagram.com/solbertinat_" target="_blank" rel="noopener">Instagram</a>
-    <a href="mailto:tu@email.com">Email</a>
-    <a href="https://wa.me/5490000000000" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="mailto:sol.bertinat12@gmail.com">Email</a>
+    <a href="https://wa.me/5491163623746" target="_blank" rel="noopener">WhatsApp</a>
   </div>
 </section>
 
@@ -374,6 +374,21 @@
      - medida: ej "30 x 40 cm"
      - disponibilidad: "Disponible" | "Vendida" | "Por encargo" | "Pieza de práctica"
      - cuadrada: true solo para la obra cuadrada protagonista
+
+     UBICACIÓN EN PANTALLA (solo aplica en desktop, en mobile se ignora
+     y todas las obras se acomodan en una columna automáticamente):
+     - x: posición horizontal, de 0 (pegado a la izquierda) a 100 (pegado
+          a la derecha). Es el % de la pantalla donde empieza la obra.
+     - y: posición vertical, de 0 (arriba) a 100 (abajo del "lienzo").
+     - ancho: qué tan grande se ve, en % del ancho de pantalla.
+          Para que ronde el 5-15% de la pantalla como pediste, usá
+          valores entre 12 y 20 aprox (las verticales se ven más chicas
+          de ancho que de alto, así que ese rango funciona bien).
+
+     Para que dos obras no se superpongan: dejá suficiente espacio entre
+     sus "x" (sumando el ancho) y entre sus "y" (la altura se calcula
+     sola según la proporción de la imagen, pero como referencia, una
+     vertical típica mide ~1.3x más de alto que de ancho).
   ========================================================= */
   const obras = [
     {
@@ -381,64 +396,67 @@
       tecnica: "Acuarela sobre papel",
       medida: "24 x 30 cm",
       disponibilidad: "Pieza de práctica",
-      cuadrada: false
+      cuadrada: false,
+      x: 4, y: 6, ancho: 16
     },
     {
       src: "https://placehold.co/1000x1000/efece4/c9c5bb?text=Obra+2",
       tecnica: "Óleo sobre lienzo",
       medida: "40 x 40 cm",
       disponibilidad: "Disponible",
-      cuadrada: true
+      cuadrada: true,
+      x: 26, y: 2, ancho: 18
     },
     {
       src: "https://placehold.co/800x1100/f4f3f0/c9c5bb?text=Obra+3",
       tecnica: "Lápiz sobre papel",
       medida: "21 x 29 cm",
       disponibilidad: "Por encargo",
-      cuadrada: false
+      cuadrada: false,
+      x: 50, y: 8, ancho: 14
     },
     {
       src: "https://placehold.co/800x1000/efece4/c9c5bb?text=Obra+4",
       tecnica: "Acrílico sobre lienzo",
       medida: "30 x 45 cm",
       disponibilidad: "Vendida",
-      cuadrada: false
+      cuadrada: false,
+      x: 70, y: 4, ancho: 16
     },
     {
       src: "https://placehold.co/800x980/f4f3f0/c9c5bb?text=Obra+5",
       tecnica: "Acuarela sobre papel",
       medida: "20 x 28 cm",
       disponibilidad: "Disponible",
-      cuadrada: false
+      cuadrada: false,
+      x: 10, y: 38, ancho: 14
     },
     {
       src: "https://placehold.co/800x1050/efece4/c9c5bb?text=Obra+6",
       tecnica: "Lápiz y grafito",
       medida: "25 x 35 cm",
       disponibilidad: "Por encargo",
-      cuadrada: false
+      cuadrada: false,
+      x: 60, y: 36, ancho: 15
     }
   ];
 
-  /* ---------- Render del grid ---------- */
+  /* ---------- Render del grid (posicionamiento libre, sin solaparse) ---------- */
   const grid = document.getElementById('obras');
-  const heights = ['h-s','h-m','h-l'];
-  const widths  = ['w-2','w-3'];
 
-  obras.forEach((obra, i) => {
+  obras.forEach((obra) => {
     const piece = document.createElement('div');
     piece.className = 'piece';
-    if (obra.cuadrada) {
-      piece.classList.add('square', 'h-xl', 'w-3');
-    } else {
-      // tamaño semi-random dentro de rangos prolijos
-      const h = heights[Math.floor(Math.random() * heights.length)];
-      const w = widths[Math.floor(Math.random() * widths.length)];
-      piece.classList.add(h, w);
-    }
+    if (obra.cuadrada) piece.classList.add('square');
+
     piece.setAttribute('tabindex', '0');
     piece.setAttribute('role', 'button');
     piece.setAttribute('aria-label', `Ver obra: ${obra.tecnica}`);
+
+    // posición y ancho fijos según x/y/ancho del array (en %)
+    piece.style.left = obra.x + '%';
+    piece.style.top = obra.y + '%';
+    piece.style.width = obra.ancho + '%';
 
     piece.innerHTML = `
       <img src="${obra.src}" alt="${obra.tecnica}, ${obra.medida}" loading="lazy">
@@ -449,6 +467,23 @@
         </div>
       </div>
     `;
+
+    // el alto se ajusta a la proporción real de la imagen una vez que carga,
+    // para que cada cuadro se vea completo y sin deformarse
+    const img = piece.querySelector('img');
+    img.addEventListener('load', () => {
+      const ratio = img.naturalHeight / img.naturalWidth;
+      const widthPx = piece.offsetWidth;
+      const heightPx = widthPx * ratio;
+      piece.style.height = heightPx + 'px';
+
+      // ajusta el alto del contenedor para que siempre alcance,
+      // sin dejar espacio vacío de más
+      const bottomEdge = piece.offsetTop + heightPx + 80; // 80px de aire abajo
+      if (bottomEdge > grid.offsetHeight) {
+        grid.style.height = bottomEdge + 'px';
+      }
+    });
 
     const openLightbox = () => {
       document.getElementById('lightboxImg').src = obra.src;
