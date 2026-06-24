@@ -93,14 +93,16 @@
     background:#f4f3f0;
     border-radius:2px;
   }
-  .piece img{
+  .piece img,
+  .piece video{
     width:100%;
     height:100%;
     object-fit:cover;
     display:block;
     transition:transform 0.6s cubic-bezier(0.22,1,0.36,1);
   }
-  .piece:hover img{
+  .piece:hover img,
+  .piece:hover video{
     transform:scale(1.035);
   }
 
@@ -242,7 +244,8 @@
     align-items:center;
     gap:1.4rem;
   }
-  .lightbox img{
+  .lightbox img,
+  .lightbox video{
     max-width:100%;
     max-height:70vh;
     object-fit:contain;
@@ -297,8 +300,8 @@
       top:auto !important;
       width:100% !important;
     }
-    .piece img{ height:auto; aspect-ratio:4/5; }
-    .piece.square img{ aspect-ratio:1/1; }
+    .piece img, .piece video{ height:auto; aspect-ratio:4/5; }
+    .piece.square img, .piece.square video{ aspect-ratio:1/1; }
     .overlay{
       opacity:1 !important;
       background:linear-gradient(
@@ -358,6 +361,7 @@
   <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
   <div class="lightbox-inner">
     <img id="lightboxImg" src="" alt="">
+    <video id="lightboxVideo" controls style="display:none;"></video>
     <div class="lightbox-caption">
       <span class="tecnica" id="lightboxTecnica"></span>
       <span class="medida" id="lightboxMedida"></span>
@@ -370,9 +374,16 @@
   /* =========================================================
      EDITÁ ACÁ TUS OBRAS — sumá un objeto por cada pieza nueva.
      - src: ruta de la imagen (poné tus fotos en una carpeta /obras)
+     - video: OPCIONAL, alternativa a "src". Si una obra tiene "video" en
+          vez de "src", se reproduce como timelapse en loop silencioso
+          dentro del grid, y con controles al abrir el lightbox. Usalo
+          para procesos en vivo donde el video ya termina mostrando la
+          obra final (no hace falta poner src Y video, uno de los dos).
      - tecnica: ej "Acuarela sobre papel"
      - medida: ej "30 x 40 cm"
-     - disponibilidad: "Disponible" | "Vendida" | "Por encargo" | "Pieza de práctica"
+     - disponibilidad: OPCIONAL. "Disponible" | "Vendida" | "Por encargo" |
+          "Pieza de práctica". Si no la incluís, simplemente no aparece
+          esa línea en el lightbox (útil para retratos que no se venden).
      - cuadrada: true solo para la obra cuadrada protagonista
 
      UBICACIÓN EN PANTALLA (solo aplica en desktop, en mobile se ignora
@@ -391,53 +402,89 @@
      vertical típica mide ~1.3x más de alto que de ancho).
   ========================================================= */
   const obras = [
+    // --- fila 1 ---
     {
-      src: "https://placehold.co/800x1000/f4f3f0/c9c5bb?text=Obra+1",
-      tecnica: "Acuarela sobre papel",
-      medida: "24 x 30 cm",
+      src: "obras/vaso.jpg",
+      tecnica: "Técnica mixta (óleos y acrílicos) sobre lienzo",
+      medida: "40 x 40 cm — 2020",
+      cuadrada: true,
+      x: 3, y: 2, ancho: 17
+    },
+    {
+      src: "obras/negra.jpg",
+      tecnica: "Acrílico sobre lienzo",
+      medida: "40 x 50 cm — 2021",
+      cuadrada: false,
+      x: 25, y: 4, ancho: 14
+    },
+    {
+      src: "obras/sainz.jpg",
+      tecnica: "Carlos Sainz — Lápices policromos y acuarelables sobre papel de dibujo",
+      medida: "A4 — 2023",
+      cuadrada: false,
+      x: 44, y: 1, ancho: 13
+    },
+    {
+      src: "obras/choco.jpg",
+      tecnica: "Lápices policromos y acuarelables sobre papel de dibujo",
+      medida: "A4 — 2022",
+      cuadrada: false,
+      x: 62, y: 5, ancho: 13
+    },
+    {
+      src: "obras/finn.jpg",
+      tecnica: "Finn Wolfhard — Lápiz negro sobre papel de dibujo",
+      medida: "A4 — 2022",
+      cuadrada: false,
+      x: 80, y: 2, ancho: 13
+    },
+
+    // --- fila 2 ---
+    {
+      src: "obras/novios.jpg",
+      tecnica: "En vivo — Técnica mixta (óleos y acrílicos) sobre lienzo",
+      medida: "35 x 27 cm — 2026",
       disponibilidad: "Pieza de práctica",
       cuadrada: false,
-      x: 4, y: 6, ancho: 16
+      x: 8, y: 38, ancho: 16
     },
     {
-      src: "https://placehold.co/1000x1000/efece4/c9c5bb?text=Obra+2",
-      tecnica: "Óleo sobre lienzo",
-      medida: "40 x 40 cm",
-      disponibilidad: "Disponible",
-      cuadrada: true,
-      x: 26, y: 2, ancho: 18
-    },
-    {
-      src: "https://placehold.co/800x1100/f4f3f0/c9c5bb?text=Obra+3",
-      tecnica: "Lápiz sobre papel",
-      medida: "21 x 29 cm",
-      disponibilidad: "Por encargo",
+      src: "obras/tom.jpg",
+      tecnica: "Tom Holland — Lápices policromos y acuarelables sobre papel de dibujo",
+      medida: "A4 — 2023",
       cuadrada: false,
-      x: 50, y: 8, ancho: 14
+      x: 30, y: 40, ancho: 13
     },
     {
-      src: "https://placehold.co/800x1000/efece4/c9c5bb?text=Obra+4",
-      tecnica: "Acrílico sobre lienzo",
-      medida: "30 x 45 cm",
-      disponibilidad: "Vendida",
+      src: "obras/wanda.jpg",
+      tecnica: "WandaVision (Disney) — Lápices policromos y acuarelables sobre papel de dibujo",
+      medida: "A4 — 2022",
       cuadrada: false,
-      x: 70, y: 4, ancho: 16
+      x: 48, y: 36, ancho: 13
     },
     {
-      src: "https://placehold.co/800x980/f4f3f0/c9c5bb?text=Obra+5",
-      tecnica: "Acuarela sobre papel",
-      medida: "20 x 28 cm",
-      disponibilidad: "Disponible",
+      src: "obras/harry.jpg",
+      tecnica: "Harry Styles — Lápices policromos y acuarelables sobre papel de dibujo",
+      medida: "A4 — 2021",
       cuadrada: false,
-      x: 10, y: 38, ancho: 14
+      x: 66, y: 39, ancho: 13
+    },
+
+    // --- fila 3 ---
+    {
+      video: "obras/novios_video.mp4",
+      tecnica: "En vivo — Acrílico sobre lienzo (proceso completo)",
+      medida: "25 x 27 cm — 2026",
+      disponibilidad: "Pieza de práctica",
+      cuadrada: false,
+      x: 20, y: 70, ancho: 15
     },
     {
-      src: "https://placehold.co/800x1050/efece4/c9c5bb?text=Obra+6",
-      tecnica: "Lápiz y grafito",
-      medida: "25 x 35 cm",
-      disponibilidad: "Por encargo",
+      src: "obras/hnaanto.jpg",
+      tecnica: "Retrato — Lápices policromos y acuarelables sobre papel de dibujo",
+      medida: "A4 — 2022",
       cuadrada: false,
-      x: 60, y: 36, ancho: 15
+      x: 45, y: 72, ancho: 13
     }
   ];
 
@@ -458,8 +505,13 @@
     piece.style.top = obra.y + '%';
     piece.style.width = obra.ancho + '%';
 
+    const esVideo = !!obra.video;
+    const mediaTag = esVideo
+      ? `<video src="${obra.video}" autoplay loop muted playsinline></video>`
+      : `<img src="${obra.src}" alt="${obra.tecnica}, ${obra.medida}" loading="lazy">`;
+
     piece.innerHTML = `
-      <img src="${obra.src}" alt="${obra.tecnica}, ${obra.medida}" loading="lazy">
+      ${mediaTag}
       <div class="overlay">
         <div class="info">
           <span class="tecnica">${obra.tecnica}</span>
@@ -468,11 +520,10 @@
       </div>
     `;
 
-    // el alto se ajusta a la proporción real de la imagen una vez que carga,
-    // para que cada cuadro se vea completo y sin deformarse
-    const img = piece.querySelector('img');
-    img.addEventListener('load', () => {
-      const ratio = img.naturalHeight / img.naturalWidth;
+    // el alto se ajusta a la proporción real del contenido una vez que carga,
+    // para que cada pieza se vea completa y sin deformarse
+    const media = piece.querySelector(esVideo ? 'video' : 'img');
+    const ajustarAlto = (ratio) => {
       const widthPx = piece.offsetWidth;
       const heightPx = widthPx * ratio;
       piece.style.height = heightPx + 'px';
@@ -483,14 +534,45 @@
       if (bottomEdge > grid.offsetHeight) {
         grid.style.height = bottomEdge + 'px';
       }
-    });
+    };
+
+    if (esVideo) {
+      media.addEventListener('loadedmetadata', () => {
+        ajustarAlto(media.videoHeight / media.videoWidth);
+      });
+    } else {
+      media.addEventListener('load', () => {
+        ajustarAlto(media.naturalHeight / media.naturalWidth);
+      });
+    }
 
     const openLightbox = () => {
-      document.getElementById('lightboxImg').src = obra.src;
-      document.getElementById('lightboxImg').alt = obra.tecnica;
+      const imgEl = document.getElementById('lightboxImg');
+      const videoEl = document.getElementById('lightboxVideo');
+
+      if (esVideo) {
+        videoEl.src = obra.video;
+        videoEl.style.display = 'block';
+        imgEl.style.display = 'none';
+        videoEl.currentTime = 0;
+        videoEl.play();
+      } else {
+        imgEl.src = obra.src;
+        imgEl.alt = obra.tecnica;
+        imgEl.style.display = 'block';
+        videoEl.style.display = 'none';
+        videoEl.pause();
+      }
+
       document.getElementById('lightboxTecnica').textContent = obra.tecnica;
       document.getElementById('lightboxMedida').textContent = obra.medida;
-      document.getElementById('lightboxDisponibilidad').textContent = obra.disponibilidad;
+      const dispEl = document.getElementById('lightboxDisponibilidad');
+      if (obra.disponibilidad) {
+        dispEl.textContent = obra.disponibilidad;
+        dispEl.style.display = 'block';
+      } else {
+        dispEl.style.display = 'none';
+      }
       document.getElementById('lightbox').classList.add('open');
     };
 
@@ -504,14 +586,16 @@
 
   /* ---------- Lightbox close ---------- */
   const lightbox = document.getElementById('lightbox');
-  document.getElementById('lightboxClose').addEventListener('click', () => {
+  const closeLightbox = () => {
     lightbox.classList.remove('open');
-  });
+    document.getElementById('lightboxVideo').pause();
+  };
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) lightbox.classList.remove('open');
+    if (e.target === lightbox) closeLightbox();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') lightbox.classList.remove('open');
+    if (e.key === 'Escape') closeLightbox();
   });
 </script>
 
