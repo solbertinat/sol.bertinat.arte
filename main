@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sol Bertinat — Pintura y dibujo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,400&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --ink:#1A1A1A;
+    --ink-soft:#6B6B6B;
+    --hairline:#E8E6E1;
+    --gradient-base: 0,0,0;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'EB Garamond', serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Tipografía base ---------- */
+  .display{
+    font-family:'Cormorant', serif;
+    font-weight:400;
+    letter-spacing:0.01em;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    padding:7vh 6vw 5vh;
+    text-align:center;
+  }
+  header h1{
+    font-family:'Cormorant', serif;
+    font-weight:400;
+    font-size:clamp(2.2rem, 5vw, 3.4rem);
+    margin:0 0 0.6rem;
+    letter-spacing:0.03em;
+  }
+  header p.tagline{
+    font-size:clamp(0.95rem, 1.4vw, 1.15rem);
+    color:var(--ink-soft);
+    margin:0;
+    font-style:italic;
+    letter-spacing:0.02em;
+  }
+
+  nav{
+    display:flex;
+    justify-content:center;
+    gap:2.2rem;
+    margin-top:2.2rem;
+    font-size:0.85rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  nav a{
+    color:var(--ink);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:border-color 0.3s ease, color 0.3s ease;
+    padding-bottom:2px;
+  }
+  nav a:hover, nav a:focus-visible{
+    border-color:var(--ink);
+  }
+
+  /* ---------- Grid masonry ---------- */
+  main{
+    max-width:1400px;
+    margin:0 auto;
+    padding:2vh 4vw 8vh;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    grid-auto-rows:10px;
+    gap:28px;
+  }
+
+  .piece{
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+    background:#f4f3f0;
+    border-radius:2px;
+  }
+  .piece img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform 0.6s cubic-bezier(0.22,1,0.36,1);
+  }
+  .piece:hover img{
+    transform:scale(1.035);
+  }
+
+  /* overlay con info, degradado abajo */
+  .piece .overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:flex-end;
+    padding:1.1rem 1.2rem;
+    opacity:0;
+    transition:opacity 0.45s ease;
+    background:linear-gradient(
+      to bottom,
+      rgba(var(--gradient-base),0) 0%,
+      rgba(var(--gradient-base),0) 50%,
+      rgba(var(--gradient-base),0.55) 100%
+    );
+  }
+  .piece:hover .overlay,
+  .piece:focus-visible .overlay,
+  .piece.touched .overlay{
+    opacity:1;
+  }
+  .overlay .info{
+    color:#fff;
+    font-family:'EB Garamond', serif;
+    font-size:0.92rem;
+    line-height:1.4;
+  }
+  .overlay .info .tecnica{
+    display:block;
+    font-style:italic;
+  }
+  .overlay .info .medida{
+    display:block;
+    font-size:0.82rem;
+    opacity:0.85;
+    margin-top:0.15rem;
+  }
+
+  .piece:focus-visible{
+    outline:2px solid var(--ink);
+    outline-offset:3px;
+  }
+
+  /* tamaños variables — clases asignadas por JS dentro de rangos */
+  .h-s{ grid-row-end:span 28; }
+  .h-m{ grid-row-end:span 36; }
+  .h-l{ grid-row-end:span 46; }
+  .h-xl{ grid-row-end:span 54; }
+
+  .w-2{ grid-column-end:span 2; }
+  .w-3{ grid-column-end:span 3; }
+
+  /* ---------- About ---------- */
+  #about{
+    max-width:620px;
+    margin:4vh auto 10vh;
+    padding:0 6vw;
+    text-align:center;
+  }
+  #about h2{
+    font-family:'Cormorant', serif;
+    font-weight:400;
+    font-size:1.6rem;
+    margin-bottom:1.2rem;
+    letter-spacing:0.02em;
+  }
+  #about p{
+    font-size:1.05rem;
+    line-height:1.75;
+    color:#2a2a2a;
+  }
+
+  /* ---------- Contacto ---------- */
+  #contacto{
+    text-align:center;
+    padding:6vh 6vw 9vh;
+    border-top:1px solid var(--hairline);
+    max-width:600px;
+    margin:0 auto;
+  }
+  #contacto h2{
+    font-family:'Cormorant', serif;
+    font-weight:400;
+    font-size:1.6rem;
+    margin-bottom:0.8rem;
+  }
+  #contacto p{
+    color:var(--ink-soft);
+    margin-bottom:1.8rem;
+    font-size:1rem;
+  }
+  .contact-links{
+    display:flex;
+    justify-content:center;
+    gap:2.5rem;
+    flex-wrap:wrap;
+  }
+  .contact-links a{
+    color:var(--ink);
+    text-decoration:none;
+    font-size:0.95rem;
+    letter-spacing:0.04em;
+    border-bottom:1px solid var(--ink);
+    padding-bottom:2px;
+    transition:opacity 0.3s ease;
+  }
+  .contact-links a:hover{
+    opacity:0.55;
+  }
+
+  footer{
+    text-align:center;
+    padding:3vh 0 5vh;
+    font-size:0.78rem;
+    color:#bdbab3;
+    letter-spacing:0.05em;
+  }
+
+  /* ---------- Lightbox ---------- */
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,0.97);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity 0.35s ease;
+    z-index:100;
+    padding:5vh 5vw;
+  }
+  .lightbox.open{
+    opacity:1;
+    visibility:visible;
+  }
+  .lightbox-inner{
+    max-width:1100px;
+    max-height:90vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:1.4rem;
+  }
+  .lightbox img{
+    max-width:100%;
+    max-height:70vh;
+    object-fit:contain;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.18);
+  }
+  .lightbox-caption{
+    text-align:center;
+    font-family:'EB Garamond', serif;
+  }
+  .lightbox-caption .tecnica{
+    font-style:italic;
+    font-size:1.05rem;
+  }
+  .lightbox-caption .medida{
+    color:var(--ink-soft);
+    font-size:0.9rem;
+    margin-top:0.2rem;
+  }
+  .lightbox-caption .disponibilidad{
+    margin-top:0.5rem;
+    font-size:0.85rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .lightbox-close{
+    position:absolute;
+    top:3vh;
+    right:4vw;
+    background:none;
+    border:none;
+    font-family:'EB Garamond', serif;
+    font-size:1.6rem;
+    color:var(--ink);
+    cursor:pointer;
+    line-height:1;
+    padding:0.5rem;
+  }
+  .lightbox-close:hover{ opacity:0.6; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 880px){
+    .grid{
+      grid-template-columns:1fr;
+      grid-auto-rows:auto;
+      gap:34px;
+    }
+    .piece{ grid-column:auto !important; grid-row:auto !important; }
+    .piece img{ height:auto; aspect-ratio:4/5; }
+    .piece.square img{ aspect-ratio:1/1; }
+    .overlay{
+      opacity:1 !important;
+      background:linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 55%,
+        rgba(0,0,0,0.5) 100%
+      ) !important;
+    }
+    nav{ gap:1.4rem; flex-wrap:wrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="display">Sol Bertinat</h1>
+  <p class="tagline">Pinturas y dibujos — por encargo y en vivo</p>
+  <nav>
+    <a href="#obras">Obras</a>
+    <a href="#about">Sobre mí</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
+
+<main>
+  <section id="obras" class="grid" aria-label="Galería de obras"></section>
+</main>
+
+<section id="about">
+  <h2 class="display">Sobre mí</h2>
+  <p>
+    Pinto y dibujo por encargo, reproduciendo la imagen que me traigas en la
+    técnica que mejor la represente. También pinto en vivo para eventos,
+    capturando un momento mientras sucede. Cada pieza se hace a mano, con
+    tiempo y atención al detalle.
+  </p>
+</section>
+
+<section id="contacto">
+  <h2 class="display">Contacto</h2>
+  <p>¿Querés encargar una obra o coordinar una pintura en vivo para tu evento?</p>
+  <div class="contact-links">
+    <a href="https://instagram.com/solbertinat_" target="_blank" rel="noopener">Instagram</a>
+    <a href="mailto:tu@email.com">Email</a>
+    <a href="https://wa.me/5490000000000" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</section>
+
+<footer>Sol Bertinat © 2026</footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
+  <div class="lightbox-inner">
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption">
+      <span class="tecnica" id="lightboxTecnica"></span>
+      <span class="medida" id="lightboxMedida"></span>
+      <div class="disponibilidad" id="lightboxDisponibilidad"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* =========================================================
+     EDITÁ ACÁ TUS OBRAS — sumá un objeto por cada pieza nueva.
+     - src: ruta de la imagen (poné tus fotos en una carpeta /obras)
+     - tecnica: ej "Acuarela sobre papel"
+     - medida: ej "30 x 40 cm"
+     - disponibilidad: "Disponible" | "Vendida" | "Por encargo" | "Pieza de práctica"
+     - cuadrada: true solo para la obra cuadrada protagonista
+  ========================================================= */
+  const obras = [
+    {
+      src: "https://placehold.co/800x1000/f4f3f0/c9c5bb?text=Obra+1",
+      tecnica: "Acuarela sobre papel",
+      medida: "24 x 30 cm",
+      disponibilidad: "Pieza de práctica",
+      cuadrada: false
+    },
+    {
+      src: "https://placehold.co/1000x1000/efece4/c9c5bb?text=Obra+2",
+      tecnica: "Óleo sobre lienzo",
+      medida: "40 x 40 cm",
+      disponibilidad: "Disponible",
+      cuadrada: true
+    },
+    {
+      src: "https://placehold.co/800x1100/f4f3f0/c9c5bb?text=Obra+3",
+      tecnica: "Lápiz sobre papel",
+      medida: "21 x 29 cm",
+      disponibilidad: "Por encargo",
+      cuadrada: false
+    },
+    {
+      src: "https://placehold.co/800x1000/efece4/c9c5bb?text=Obra+4",
+      tecnica: "Acrílico sobre lienzo",
+      medida: "30 x 45 cm",
+      disponibilidad: "Vendida",
+      cuadrada: false
+    },
+    {
+      src: "https://placehold.co/800x980/f4f3f0/c9c5bb?text=Obra+5",
+      tecnica: "Acuarela sobre papel",
+      medida: "20 x 28 cm",
+      disponibilidad: "Disponible",
+      cuadrada: false
+    },
+    {
+      src: "https://placehold.co/800x1050/efece4/c9c5bb?text=Obra+6",
+      tecnica: "Lápiz y grafito",
+      medida: "25 x 35 cm",
+      disponibilidad: "Por encargo",
+      cuadrada: false
+    }
+  ];
+
+  /* ---------- Render del grid ---------- */
+  const grid = document.getElementById('obras');
+  const heights = ['h-s','h-m','h-l'];
+  const widths  = ['w-2','w-3'];
+
+  obras.forEach((obra, i) => {
+    const piece = document.createElement('div');
+    piece.className = 'piece';
+    if (obra.cuadrada) {
+      piece.classList.add('square', 'h-xl', 'w-3');
+    } else {
+      // tamaño semi-random dentro de rangos prolijos
+      const h = heights[Math.floor(Math.random() * heights.length)];
+      const w = widths[Math.floor(Math.random() * widths.length)];
+      piece.classList.add(h, w);
+    }
+    piece.setAttribute('tabindex', '0');
+    piece.setAttribute('role', 'button');
+    piece.setAttribute('aria-label', `Ver obra: ${obra.tecnica}`);
+
+    piece.innerHTML = `
+      <img src="${obra.src}" alt="${obra.tecnica}, ${obra.medida}" loading="lazy">
+      <div class="overlay">
+        <div class="info">
+          <span class="tecnica">${obra.tecnica}</span>
+          <span class="medida">${obra.medida}</span>
+        </div>
+      </div>
+    `;
+
+    const openLightbox = () => {
+      document.getElementById('lightboxImg').src = obra.src;
+      document.getElementById('lightboxImg').alt = obra.tecnica;
+      document.getElementById('lightboxTecnica').textContent = obra.tecnica;
+      document.getElementById('lightboxMedida').textContent = obra.medida;
+      document.getElementById('lightboxDisponibilidad').textContent = obra.disponibilidad;
+      document.getElementById('lightbox').classList.add('open');
+    };
+
+    piece.addEventListener('click', openLightbox);
+    piece.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(); }
+    });
+
+    grid.appendChild(piece);
+  });
+
+  /* ---------- Lightbox close ---------- */
+  const lightbox = document.getElementById('lightbox');
+  document.getElementById('lightboxClose').addEventListener('click', () => {
+    lightbox.classList.remove('open');
+  });
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) lightbox.classList.remove('open');
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') lightbox.classList.remove('open');
+  });
+</script>
+
+</body>
+</html>
