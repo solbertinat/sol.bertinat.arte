@@ -13,13 +13,14 @@
     --ink:#1A1A1A;
     --ink-soft:#6B6B6B;
     --hairline:#E8E6E1;
-    --gradient-base: 26,20,18;
+    --gradient-base: 10,8,7;
 
     /* paleta de acento, pastel y sutil */
-    --amarillo: #E8D9A8;
-    --celeste: #AFC9CE;
-    --bordo: #6E3B4E;
-    --bordo-suave: #8A5468;
+    --amarillo: #EAD27A;
+    --celeste: #5B8FA8;
+    --azul: #2C5F82;
+    --bordo: #A01030;
+    --bordo-suave: #A01030;
   }
 
   *{ box-sizing:border-box; }
@@ -47,9 +48,10 @@
   header h1{
     font-family:'Cormorant', serif;
     font-weight:400;
-    font-size:clamp(2.2rem, 5vw, 3.4rem);
+    font-size:clamp(3.2rem, 7.5vw, 5.2rem);
     margin:0 0 0.6rem;
     letter-spacing:0.03em;
+    color:var(--azul);
   }
   header p.tagline{
     font-size:clamp(0.95rem, 1.4vw, 1.15rem);
@@ -75,9 +77,17 @@
     transition:border-color 0.3s ease, color 0.3s ease;
     padding-bottom:2px;
   }
-  nav a:hover, nav a:focus-visible{
+  nav a[href="#obras"]:hover, nav a[href="#obras"]:focus-visible{
+    border-color:var(--amarillo);
+    color:#9c8424;
+  }
+  nav a[href="#about"]:hover, nav a[href="#about"]:focus-visible{
     border-color:var(--bordo);
     color:var(--bordo);
+  }
+  nav a[href="#contacto"]:hover, nav a[href="#contacto"]:focus-visible{
+    border-color:var(--azul);
+    color:var(--azul);
   }
 
   /* ---------- Grid masonry ---------- */
@@ -113,7 +123,7 @@
     transform:scale(1.035);
   }
 
-  /* overlay con info, degradado abajo */
+  /* overlay con info, degradado amarillo abajo */
   .piece .overlay{
     position:absolute;
     inset:0;
@@ -124,9 +134,9 @@
     transition:opacity 0.45s ease;
     background:linear-gradient(
       to bottom,
-      rgba(var(--gradient-base),0) 0%,
-      rgba(var(--gradient-base),0) 50%,
-      rgba(var(--gradient-base),0.55) 100%
+      rgba(234,210,122,0) 0%,
+      rgba(234,210,122,0) 50%,
+      rgba(234,210,122,0.88) 100%
     );
   }
   .piece:hover .overlay,
@@ -135,7 +145,7 @@
     opacity:1;
   }
   .overlay .info{
-    color:#fff;
+    color:#2a2410;
     font-family:'EB Garamond', serif;
     font-size:0.92rem;
     line-height:1.4;
@@ -320,9 +330,9 @@
       opacity:1 !important;
       background:linear-gradient(
         to bottom,
-        rgba(var(--gradient-base),0) 0%,
-        rgba(var(--gradient-base),0) 72%,
-        rgba(var(--gradient-base),0.62) 100%
+        rgba(234,210,122,0) 0%,
+        rgba(234,210,122,0) 72%,
+        rgba(234,210,122,0.9) 100%
       ) !important;
     }
     nav{ gap:1.4rem; flex-wrap:wrap; }
@@ -423,35 +433,35 @@
       tecnica: "Técnica mixta (óleos y acrílicos) sobre lienzo",
       medida: "40 x 40 cm — 2020",
       cuadrada: true,
-      x: 3, y: 2, ancho: 17
+      x: 3, y: 2, ancho: 18.5
     },
     {
       src: "obras/negra.jpg",
       tecnica: "Acrílico sobre lienzo",
       medida: "40 x 50 cm — 2021",
       cuadrada: false,
-      x: 25, y: 4, ancho: 14
+      x: 25, y: 4, ancho: 15.5
     },
     {
       src: "obras/sainz.jpg",
       tecnica: "Carlos Sainz — Lápices policromos y acuarelables sobre papel de dibujo",
       medida: "A4 — 2023",
       cuadrada: false,
-      x: 44, y: 1, ancho: 13
+      x: 44, y: 1, ancho: 14.5
     },
     {
       src: "obras/choco.jpg",
       tecnica: "Lápices policromos y acuarelables sobre papel de dibujo",
       medida: "A4 — 2022",
       cuadrada: false,
-      x: 62, y: 5, ancho: 13
+      x: 62, y: 5, ancho: 14.5
     },
     {
       src: "obras/finn.jpg",
       tecnica: "Finn Wolfhard — Lápiz negro sobre papel de dibujo",
       medida: "A4 — 2022",
       cuadrada: false,
-      x: 80, y: 2, ancho: 13
+      x: 80, y: 2, ancho: 14.5
     },
 
     // --- fila 2 ---
@@ -461,28 +471,28 @@
       medida: "35 x 27 cm — 2026",
       disponibilidad: "Pieza de práctica",
       cuadrada: false,
-      x: 8, y: 38, ancho: 16
+      x: 8, y: 38, ancho: 17.5
     },
     {
       src: "obras/tom.jpg",
       tecnica: "Tom Holland — Lápices policromos y acuarelables sobre papel de dibujo",
       medida: "A4 — 2023",
       cuadrada: false,
-      x: 30, y: 40, ancho: 13
+      x: 30, y: 40, ancho: 14.5
     },
     {
       src: "obras/wanda.jpg",
       tecnica: "WandaVision (Disney) — Lápices policromos y acuarelables sobre papel de dibujo",
       medida: "A4 — 2022",
       cuadrada: false,
-      x: 48, y: 36, ancho: 13
+      x: 48, y: 36, ancho: 14.5
     },
     {
       src: "obras/harry.jpg",
       tecnica: "Harry Styles — Lápices policromos y acuarelables sobre papel de dibujo",
       medida: "A4 — 2021",
       cuadrada: false,
-      x: 66, y: 39, ancho: 13
+      x: 66, y: 39, ancho: 14.5
     },
 
     // --- fila 3 ---
@@ -492,14 +502,14 @@
       medida: "25 x 27 cm — 2026",
       disponibilidad: "Pieza de práctica",
       cuadrada: false,
-      x: 20, y: 70, ancho: 15
+      x: 20, y: 70, ancho: 16.5
     },
     {
       src: "obras/hnaanto.jpg",
       tecnica: "Retrato — Lápices policromos y acuarelables sobre papel de dibujo",
       medida: "A4 — 2022",
       cuadrada: false,
-      x: 45, y: 72, ancho: 13
+      x: 45, y: 72, ancho: 14.5
     }
   ];
 
@@ -521,9 +531,11 @@
     piece.style.width = obra.ancho + '%';
 
     const esVideo = !!obra.video;
+    const coloresFallback = ['#EAD27A', '#5B8FA8', '#2C5F82', '#A01030'];
+    const colorFallback = coloresFallback[Math.floor(Math.random() * coloresFallback.length)];
     const mediaTag = esVideo
       ? `<video src="${obra.video}" autoplay loop muted playsinline></video>`
-      : `<img src="${obra.src}" alt="${obra.tecnica}, ${obra.medida}" loading="lazy">`;
+      : `<img src="${obra.src}" alt="" loading="lazy" onerror="this.style.display='none'; this.parentElement.style.background='${colorFallback}';">`;
 
     piece.innerHTML = `
       ${mediaTag}
