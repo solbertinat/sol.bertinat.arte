@@ -13,7 +13,13 @@
     --ink:#1A1A1A;
     --ink-soft:#6B6B6B;
     --hairline:#E8E6E1;
-    --gradient-base: 0,0,0;
+    --gradient-base: 26,20,18;
+
+    /* paleta de acento, pastel y sutil */
+    --amarillo: #E8D9A8;
+    --celeste: #AFC9CE;
+    --bordo: #6E3B4E;
+    --bordo-suave: #8A5468;
   }
 
   *{ box-sizing:border-box; }
@@ -47,7 +53,7 @@
   }
   header p.tagline{
     font-size:clamp(0.95rem, 1.4vw, 1.15rem);
-    color:var(--ink-soft);
+    color:var(--bordo-suave);
     margin:0;
     font-style:italic;
     letter-spacing:0.02em;
@@ -70,7 +76,8 @@
     padding-bottom:2px;
   }
   nav a:hover, nav a:focus-visible{
-    border-color:var(--ink);
+    border-color:var(--bordo);
+    color:var(--bordo);
   }
 
   /* ---------- Grid masonry ---------- */
@@ -90,7 +97,7 @@
     position:absolute;
     overflow:hidden;
     cursor:pointer;
-    background:#f4f3f0;
+    background:#f3ecd9;
     border-radius:2px;
   }
   .piece img,
@@ -159,12 +166,24 @@
     padding:0 6vw;
     text-align:center;
   }
-  #about h2{
+  #about h2,
+  #contacto h2{
     font-family:'Cormorant', serif;
     font-weight:400;
     font-size:1.6rem;
     margin-bottom:1.2rem;
     letter-spacing:0.02em;
+    position:relative;
+    display:inline-block;
+  }
+  #about h2::after,
+  #contacto h2::after{
+    content:'';
+    display:block;
+    width:28px;
+    height:2px;
+    background:var(--celeste);
+    margin:0.55rem auto 0;
   }
   #about p{
     font-size:1.05rem;
@@ -179,12 +198,6 @@
     border-top:1px solid var(--hairline);
     max-width:600px;
     margin:0 auto;
-  }
-  #contacto h2{
-    font-family:'Cormorant', serif;
-    font-weight:400;
-    font-size:1.6rem;
-    margin-bottom:0.8rem;
   }
   #contacto p{
     color:var(--ink-soft);
@@ -204,10 +217,12 @@
     letter-spacing:0.04em;
     border-bottom:1px solid var(--ink);
     padding-bottom:2px;
-    transition:opacity 0.3s ease;
+    transition:opacity 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
   .contact-links a:hover{
-    opacity:0.55;
+    opacity:1;
+    color:#4a7a82;
+    border-color:#4a7a82;
   }
 
   footer{
@@ -300,14 +315,14 @@
       top:auto !important;
       width:100% !important;
     }
-    .piece img, .piece video{ height:auto; aspect-ratio:4/5; }
-    .piece.square img, .piece.square video{ aspect-ratio:1/1; }
+    .piece img, .piece video{ width:100%; height:auto; object-fit:initial; }
     .overlay{
       opacity:1 !important;
       background:linear-gradient(
         to bottom,
-        rgba(0,0,0,0) 55%,
-        rgba(0,0,0,0.5) 100%
+        rgba(var(--gradient-base),0) 0%,
+        rgba(var(--gradient-base),0) 72%,
+        rgba(var(--gradient-base),0.62) 100%
       ) !important;
     }
     nav{ gap:1.4rem; flex-wrap:wrap; }
@@ -521,9 +536,14 @@
     `;
 
     // el alto se ajusta a la proporción real del contenido una vez que carga,
-    // para que cada pieza se vea completa y sin deformarse
+    // para que cada pieza se vea completa y sin deformarse.
+    // Solo aplica en desktop: en mobile, la imagen ya define su propio
+    // alto natural por CSS (width:100%; height:auto), sin necesitar JS.
     const media = piece.querySelector(esVideo ? 'video' : 'img');
+    const esDesktop = () => window.innerWidth > 880;
+
     const ajustarAlto = (ratio) => {
+      if (!esDesktop()) return;
       const widthPx = piece.offsetWidth;
       const heightPx = widthPx * ratio;
       piece.style.height = heightPx + 'px';
@@ -582,6 +602,30 @@
     });
 
     grid.appendChild(piece);
+  });
+
+  // si la pantalla cruza el breakpoint mobile/desktop (ej. al rotar el
+  // celular o cambiar tamaño de ventana), recalcula u olvida el alto fijo
+  let anchoAnterior = window.innerWidth;
+  window.addEventListener('resize', () => {
+    const cruzoBreakpoint = (anchoAnterior > 880) !== (window.innerWidth > 880);
+    anchoAnterior = window.innerWidth;
+    if (!cruzoBreakpoint) return;
+
+    document.querySelectorAll('.piece').forEach(piece => {
+      if (window.innerWidth <= 880) {
+        piece.style.height = ''; // en mobile, que la imagen defina su alto
+      } else {
+        const media = piece.querySelector('img, video');
+        if (media && media.naturalWidth) {
+          const ratio = media.naturalHeight / media.naturalWidth;
+          piece.style.height = (piece.offsetWidth * ratio) + 'px';
+        } else if (media && media.videoWidth) {
+          const ratio = media.videoHeight / media.videoWidth;
+          piece.style.height = (piece.offsetWidth * ratio) + 'px';
+        }
+      }
+    });
   });
 
   /* ---------- Lightbox close ---------- */
