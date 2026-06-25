@@ -24,14 +24,18 @@
   }
 
   *{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
+  html{ scroll-behavior:smooth; overflow-x:hidden; }
   body{
     margin:0;
     background:var(--bg);
     color:var(--ink);
     font-family:'EB Garamond', serif;
     -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    scrollbar-width:none;
   }
+  body::-webkit-scrollbar{ display:none; }
+  html::-webkit-scrollbar{ display:none; }
 
   /* ---------- Tipografía base ---------- */
   .display{
@@ -95,12 +99,14 @@
     max-width:1400px;
     margin:0 auto;
     padding:2vh 4vw 8vh;
+    overflow:hidden;
   }
 
   .grid{
     position:relative;
     width:100%;
     height:1600px; /* alto del "lienzo" donde flotan las obras en desktop */
+    overflow:hidden;
   }
 
   .piece{
@@ -446,36 +452,36 @@
       tecnica: "Técnica mixta (óleos y acrílicos) sobre lienzo",
       medida: "40 x 40 cm — 2020",
       cuadrada: true,
-      x: 2, y: 4, ancho: 18.5
+      x: 3, y: 2, ancho: 18.5
     },
     {
-      video: "obras/video_novios.MP4",
+      video: "obras/novios_video.mp4",
       tecnica: "En vivo — Acrílico sobre lienzo (proceso completo)",
       medida: "25 x 27 cm — 2026",
       disponibilidad: "Pieza de práctica",
       cuadrada: false,
-      x: 25, y: 10, ancho: 13.5
+      x: 25, y: 4, ancho: 16.5
     },
     {
       src: "obras/sainz.jpg",
       tecnica: "Carlos Sainz — Lápices policromos y acuarelables sobre papel de dibujo",
       medida: "A4 — 2023",
       cuadrada: false,
-      x: 45, y: 1, ancho: 15
+      x: 45, y: 1, ancho: 14.5
     },
     {
       src: "obras/choco.jpg",
       tecnica: "Lápices policromos y acuarelables sobre papel de dibujo",
       medida: "A4 — 2022",
       cuadrada: false,
-      x: 69, y: 6, ancho: 12
+      x: 63, y: 5, ancho: 14.5
     },
     {
       src: "obras/negra.jpg",
       tecnica: "Acrílico sobre lienzo",
       medida: "40 x 50 cm — 2021",
       cuadrada: false,
-      x: 90, y: 3, ancho: 16
+      x: 81, y: 2, ancho: 15.5
     },
 
     // --- fila 2 ---
