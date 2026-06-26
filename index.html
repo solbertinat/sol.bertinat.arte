@@ -98,13 +98,13 @@
   main{
     max-width:1400px;
     margin:0 auto;
-    padding:2vh 4vw 8vh;
+    padding:2vh 4vw 0;
   }
 
   .grid{
     position:relative;
     width:100%;
-    height:1600px; /* alto del "lienzo" donde flotan las obras en desktop */
+    height:1600px; /* alto fijo del "lienzo" donde flotan las obras en desktop */
   }
 
   .piece{
@@ -113,6 +113,13 @@
     cursor:pointer;
     background:#f3ecd9;
     border-radius:2px;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .piece.in-view{
+    opacity:1;
+    transform:translateY(0);
   }
   .piece img,
   .piece video{
@@ -121,6 +128,7 @@
     object-fit:cover;
     display:block;
     transition:transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    image-rendering:auto;
   }
   .piece:hover img,
   .piece:hover video{
@@ -186,7 +194,7 @@
   /* ---------- About ---------- */
   #about{
     max-width:620px;
-    margin:4vh auto 10vh;
+    margin:0 auto 10vh;
     padding:0 6vw;
     text-align:center;
   }
@@ -322,11 +330,13 @@
     cursor:pointer;
     line-height:1;
     padding:0.5rem;
+    transition:opacity 0.3s ease, transform 0.3s ease;
   }
-  .lightbox-close:hover{ opacity:0.6; }
+  .lightbox-close:hover{ opacity:0.6; transform:rotate(90deg); }
 
   /* ---------- Responsive ---------- */
   @media (max-width: 880px){
+    main{ padding:2vh 4vw 0; }
     .grid{
       height:auto;
       display:flex;
@@ -357,6 +367,7 @@
 
   @media (prefers-reduced-motion: reduce){
     *{ transition:none !important; scroll-behavior:auto !important; }
+    .piece{ opacity:1 !important; transform:none !important; }
   }
 </style>
 </head>
@@ -418,30 +429,13 @@
      - src: ruta de la imagen (poné tus fotos en una carpeta /obras)
      - video: OPCIONAL, alternativa a "src". Si una obra tiene "video" en
           vez de "src", se reproduce como timelapse en loop silencioso
-          dentro del grid, y con controles al abrir el lightbox. Usalo
-          para procesos en vivo donde el video ya termina mostrando la
-          obra final (no hace falta poner src Y video, uno de los dos).
+          dentro del grid, y con controles al abrir el lightbox.
      - tecnica: ej "Acuarela sobre papel"
      - medida: ej "30 x 40 cm"
      - disponibilidad: OPCIONAL. "Disponible" | "Vendida" | "Por encargo" |
-          "Pieza de práctica". Si no la incluís, simplemente no aparece
-          esa línea en el lightbox (útil para retratos que no se venden).
+          "Pieza de práctica". Si no la incluís, no aparece esa línea.
      - cuadrada: true solo para la obra cuadrada protagonista
-
-     UBICACIÓN EN PANTALLA (solo aplica en desktop, en mobile se ignora
-     y todas las obras se acomodan en una columna automáticamente):
-     - x: posición horizontal, de 0 (pegado a la izquierda) a 100 (pegado
-          a la derecha). Es el % de la pantalla donde empieza la obra.
-     - y: posición vertical, de 0 (arriba) a 100 (abajo del "lienzo").
-     - ancho: qué tan grande se ve, en % del ancho de pantalla.
-          Para que ronde el 5-15% de la pantalla como pediste, usá
-          valores entre 12 y 20 aprox (las verticales se ven más chicas
-          de ancho que de alto, así que ese rango funciona bien).
-
-     Para que dos obras no se superpongan: dejá suficiente espacio entre
-     sus "x" (sumando el ancho) y entre sus "y" (la altura se calcula
-     sola según la proporción de la imagen, pero como referencia, una
-     vertical típica mide ~1.3x más de alto que de ancho).
+     - x, y, ancho: posición y tamaño en % (ver charla previa)
   ========================================================= */
   const obras = [
     // --- fila 1 ---
@@ -566,23 +560,15 @@
 
     // el alto se ajusta a la proporción real del contenido una vez que carga,
     // para que cada pieza se vea completa y sin deformarse.
-    // Solo aplica en desktop: en mobile, la imagen ya define su propio
-    // alto natural por CSS (width:100%; height:auto), sin necesitar JS.
+    // El alto del lienzo (.grid) queda fijo por CSS, así las posiciones
+    // x/y nunca varían entre cargas.
     const media = piece.querySelector(esVideo ? 'video' : 'img');
     const esDesktop = () => window.innerWidth > 880;
 
     const ajustarAlto = (ratio) => {
       if (!esDesktop()) return;
       const widthPx = piece.offsetWidth;
-      const heightPx = widthPx * ratio;
-      piece.style.height = heightPx + 'px';
-
-      // ajusta el alto del contenedor para que siempre alcance,
-      // sin dejar espacio vacío de más
-      const bottomEdge = piece.offsetTop + heightPx + 80; // 80px de aire abajo
-      if (bottomEdge > grid.offsetHeight) {
-        grid.style.height = bottomEdge + 'px';
-      }
+      piece.style.height = (widthPx * ratio) + 'px';
     };
 
     if (esVideo) {
@@ -664,7 +650,7 @@
 
     document.querySelectorAll('.piece').forEach(piece => {
       if (window.innerWidth <= 880) {
-        piece.style.height = ''; // en mobile, que la imagen defina su alto
+        piece.style.height = '';
       } else {
         const media = piece.querySelector('img, video');
         if (media && media.naturalWidth) {
@@ -677,6 +663,22 @@
       }
     });
   });
+
+  /* ---------- Animación sutil al entrar en pantalla ---------- */
+  const piezas = document.querySelectorAll('.piece');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    piezas.forEach(p => observer.observe(p));
+  } else {
+    piezas.forEach(p => p.classList.add('in-view'));
+  }
 
   /* ---------- Lightbox close ---------- */
   const lightbox = document.getElementById('lightbox');
